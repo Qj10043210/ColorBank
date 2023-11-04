@@ -596,14 +596,14 @@
             $(this).fadeOut();
             $('#popLeft-index').fadeIn(300);
             $('#popLeft-index').css({
-                left : 0
-            })
+                left :0
+            });
         });
         $(document).on("mouseleave", '#popLeft-index', function(){
             $(this).fadeOut();
              $('#popLeft-index').css({
-                left : -1000%
-            })
+                left : '-1000%'
+            });
             $('#popLeft-icon').fadeIn();
         })
         $(document).on("click", '.jsonDivs', function(){
