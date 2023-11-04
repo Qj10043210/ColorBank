@@ -192,7 +192,7 @@
         #popLeft-index {
             position: absolute;
             top: 0;
-            left: 0;
+            left: -1000%;
             background-color: #e7c98b;
             width: 100%;
             height: 100%;
@@ -592,6 +592,9 @@
         $(document).on("click", '#popLeft-icon', function(){
             $(this).fadeOut();
             $('#popLeft-index').fadeIn(300);
+            $('#popLeft-index').css({
+                left : 0
+            });
         });
         $(document).on("mouseleave", '#popLeft-index', function(){
             $(this).fadeOut();
