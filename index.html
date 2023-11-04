@@ -598,6 +598,9 @@
         });
         $(document).on("mouseleave", '#popLeft-index', function(){
             $(this).fadeOut();
+             $('#popLeft-index').css({
+                left : -1000%
+            });
             $('#popLeft-icon').fadeIn();
         })
         $(document).on("click", '.jsonDivs', function(){
