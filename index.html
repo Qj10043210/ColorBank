@@ -318,7 +318,7 @@
 
     <script>
         //const rgbPt = /^rgb\(\s*(\d{1,3}(\.\d+)?)\s*,\s*(\d{1,3}(\.\d+)?)\s*,\s*(\d{1,3}(\.\d+)?)\s*\)$/i;
-        const rgbPt = /^rgb\(\s*((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d|0+)\s*,\s*(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d|0+)\s*,\s*(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d|0+))\s*\)$/i;
+        const rgbPt = /^rgb\(\s*(0*(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d))\s*,\s*(0*(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d))\s*,\s*(0*(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d))\s*\)$/i;
 
 
         const hexPt = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -466,35 +466,44 @@
             console.log(tempText)
             $('#showList').append(tempText);
         }
-        function colorIndicating(element) {
-            if (rgbPt.test(element)) {
-                let cn = element.toLowerCase();
-                let foundColor = colorData.find(color => color.rgb.toLowerCase() == cn);
-                if (foundColor) {
-                    return { type: 'name', value: foundColor };
-                } else {
-                    return { type: 'rgb', value: element };
-                }
-                return { type: 'rgb', value: element };
-            } else if (hexPt.test(element)) {
-                let cn = element.toLowerCase();
-                let foundColor = colorData.find(color => color.hex.toLowerCase() == cn);
-                if (foundColor) {
-                    return { type: 'name', value: foundColor };
-                } else {
-                    return { type: 'hex', value: element };
-                }
-                return { type: 'hex', value: element };
+       function colorIndicating(element) {
+    const lowerCasedElement = element.toLowerCase();
+
+    // Try to match RGB format
+    if (rgbPt.test(lowerCasedElement)) {
+        const components = lowerCasedElement.match(/\d+/g);
+        if (components) {
+            const normalizedRGB = `rgb(${components.map(component => parseInt(component, 10)).join(",")})`;
+            const foundColor = colorData.find(color => color.rgb.toLowerCase() === normalizedRGB);
+            if (foundColor) {
+                return { type: 'name', value: foundColor };
             } else {
-                let cn = element.toLowerCase();
-                let foundColor = colorData.find(color => color.name.toLowerCase() == cn);
-                if (foundColor) {
-                    return { type: 'name', value: foundColor };
-                } else {
-                    return { type: 'error', value: element };
-                }
+                return { type: 'rgb', value: normalizedRGB };
             }
         }
+    }
+    // Handle hex format
+    else if (hexPt.test(lowerCasedElement)) {
+        // Normalize the hex value if needed
+        const normalizedHex = lowerCasedElement;
+        const foundColor = colorData.find(color => color.hex.toLowerCase() === normalizedHex);
+        if (foundColor) {
+            return { type: 'name', value: foundColor };
+        } else {
+            return { type: 'hex', value: normalizedHex };
+        }
+    }
+    // Handle color names
+    else {
+        const foundColor = colorData.find(color => color.name.toLowerCase() === lowerCasedElement);
+        if (foundColor) {
+            return { type: 'name', value: foundColor };
+        } else {
+            return { type: 'error', value: element };
+        }
+    }
+}
+
         function rgbToHex(tempText) {
 
             const rgbPattern = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/;
